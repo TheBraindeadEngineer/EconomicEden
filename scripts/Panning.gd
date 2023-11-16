@@ -5,8 +5,10 @@ const MOVE_SPEED: float = 400
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey:
-		var input_direction = Input.get_vector("Left", "Right", "Up", "Down")
-		position += input_direction
+		if Input.is_action_just_pressed("zoom_in"):
+			zoom_out()
+		elif Input.is_action_just_pressed("zoom_out"):
+			zoom_in()
 	if event is InputEventMouseMotion:
 		if event.button_mask == MOUSE_BUTTON_RIGHT:
 			position -= event.relative * zoom * 0.25
