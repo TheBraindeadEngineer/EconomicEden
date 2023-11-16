@@ -1,0 +1,36 @@
+[gd_scene load_steps=5 format=3 uid="uid://2afkc7wc3tlu"]
+
+[ext_resource type="Texture2D" uid="uid://scx4mxt1ypkv" path="res://textures/buttons/play/normal_play.png" id="1_pycj0"]
+[ext_resource type="Texture2D" uid="uid://3jb410s74eq3" path="res://textures/buttons/play/hover_play.png" id="2_rdi42"]
+[ext_resource type="Texture2D" uid="uid://dca03hu6dfxky" path="res://textures/buttons/play/clicked_play.png" id="2_xxbfx"]
+[ext_resource type="Script" path="res://scenes/ui/PlayButton.gd" id="4_2rrts"]
+
+[node name="Main Menu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="TextureButton" type="TextureButton" parent="MarginContainer/CenterContainer"]
+layout_mode = 2
+texture_normal = ExtResource("1_pycj0")
+texture_pressed = ExtResource("2_xxbfx")
+texture_hover = ExtResource("2_rdi42")
+script = ExtResource("4_2rrts")
