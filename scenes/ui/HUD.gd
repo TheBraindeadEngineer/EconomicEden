@@ -7,6 +7,9 @@ signal selected_tile_changed(new_selected_tile)
 signal build_selected(building)
 signal asset_selected(asset)
 signal assets_update(assets)
+signal asset_menu_selected(asset, data)
+
+@onready var asset_selection_menu = %AssetMenu
 
 @onready var money_label = %MoneyLabel
 @onready var owned_land_label = %OwnedLandLabel
@@ -31,7 +34,9 @@ var _assets_menu = false
 
 var _data = {}
 
-var _assets = {}
+var _assets = {
+	"wood": 0
+}
 
 func _ready():
 	money_label.text = "Money: 1000$"
@@ -41,11 +46,7 @@ func _ready():
 func _input(event):
 	if event is InputEventKey:
 		if Input.is_action_just_pressed("build_menu"):
-			_building = !_building
-			building_menu.set_visible(_building)
-			build_selected.emit(_building)
-			if !_building:
-				selected_tile_changed.emit(null)
+			toggle_build_menu()
 			return
 		if _building && build_menu_layer == 1:
 			if Input.is_key_pressed(KEY_1):
@@ -54,13 +55,23 @@ func _input(event):
 				selected_tile_changed.emit(TREE_FARM)
 			return
 		if Input.is_action_just_pressed("asset_menu"):
-			_assets_menu = !_assets_menu
-			asset_menu.set_visible(_assets_menu)
+			toggle_asset_menu()
 			return
 		if _assets_menu:
 			if Input.is_key_pressed(KEY_1):
-				asset_selected.emit("wood")
+				asset_has_been_selected("wood")
 			return
+
+func toggle_build_menu():
+	_building = !_building
+	building_menu.set_visible(_building)
+	build_selected.emit(_building)
+	if !_building:
+		selected_tile_changed.emit(null)
+
+func toggle_asset_menu():
+	_assets_menu = !_assets_menu
+	asset_menu.set_visible(_assets_menu)
 
 func _on_ui_update(data):
 	_data = data
@@ -82,9 +93,20 @@ func _on_selected_tile_changed(tile):
 
 func _on_game_assets_update(assets):
 	_assets = assets
-	wood_label.text = "Wood: " + str(_assets["wood"])
+	wood_label.text = "1: Wood: " + str(_assets["wood"])
 
-func _on_asset_selected(asset):
-	match asset:
-		"wood":
-			return
+func asset_has_been_selected(asset):
+	if asset == "wood":
+		asset_selection_menu.set_visible(true)
+		asset_menu_selected.emit("wood", _assets, _data)
+
+
+func _on_asset_menu_has_been_sold(assets, data):
+	_assets = assets
+	_data = data
+	_on_ui_update(_data)
+	asset_selection_menu.set_visible(false)
+
+
+func _on_asset_menu_has_canceled():
+	asset_selection_menu.set_visible(false)

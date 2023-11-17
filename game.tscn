@@ -12,6 +12,8 @@ texture = ExtResource("2_iimwh")
 2:0/0 = 0
 
 [sub_resource type="TileSet" id="TileSet_pfc0d"]
+custom_data_layer_0/name = "TYPE"
+custom_data_layer_0/type = 0
 sources/0 = SubResource("TileSetAtlasSource_akkyn")
 
 [node name="Game" type="Node2D"]

@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://bk7jucdgcataw"]
+[gd_scene load_steps=4 format=3 uid="uid://bk7jucdgcataw"]
 
 [ext_resource type="Script" path="res://scenes/ui/HUD.gd" id="1_say4t"]
 [ext_resource type="FontFile" uid="uid://0ui3h63uhb7c" path="res://textures/fonts/Karma Suture.otf" id="2_locit"]
+[ext_resource type="PackedScene" uid="uid://4scdp5b8orw1" path="res://scenes/ui/AssetMenu.tscn" id="3_txgrn"]
 
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1_say4t")
@@ -64,6 +65,7 @@ text = "Price:"
 
 [node name="AssetsContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 
 [node name="WoodLabel" type="Label" parent="MarginContainer/VBoxContainer/AssetsContainer"]
@@ -100,3 +102,11 @@ layout_mode = 2
 theme_override_fonts/font = ExtResource("2_locit")
 theme_override_font_sizes/font_size = 40
 text = "2: Tree Farm"
+
+[node name="AssetMenu" parent="." instance=ExtResource("3_txgrn")]
+unique_name_in_owner = true
+visible = false
+
+[connection signal="asset_menu_selected" from="." to="AssetMenu" method="_on_hud_asset_menu_selected"]
+[connection signal="has_been_sold" from="AssetMenu" to="." method="_on_asset_menu_has_been_sold"]
+[connection signal="has_canceled" from="AssetMenu" to="." method="_on_asset_menu_has_canceled"]

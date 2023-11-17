@@ -35,27 +35,32 @@ func _input(event):
 			var mouse_pos = get_global_mouse_position()
 			var tile_pos = tile_map.local_to_map(mouse_pos)
 			var tile = tile_map.get_cell_tile_data(0, tile_pos)
-			if !tile:
+			if selected_tile == LAND && tile == null:
 				if data["owned_land"] > 0:
 					data["owned_land"] -= 1
-					ui_update.emit(data)
-					place_tile(tile_pos, selected_tile)
 				elif data["money"] >= data["land_price"]:
 					data["money"] -= data["land_price"]
 					_land_bought()
-					ui_update.emit(data)
-					place_tile(tile_pos, selected_tile)
+				else:
+					tile = null
+					return
+				ui_update.emit(data)
+				place_tile(tile_pos, LAND, "LAND")
 				tile = null
 				return
-			elif tile.get_texture_origin() == LAND:
-					if selected_tile == TREE_FARM && data["money"] >= 100:
-						data["money"] -= 100
-						ui_update.emit(data)
-						place_tree_farm(tile_pos)
+			if tile == null:
+				return
+			elif selected_tile == TREE_FARM && tile.get_custom_data("TYPE") == "LAND":
+				if data["money"] >= 100:
+					data["money"] -= 100
+					place_tree_farm(tile_pos)
+					ui_update.emit(data)
 			tile = null
 
-func place_tile(position, tile):
+func place_tile(position, tile, type):
+	tile_map.set_cell(0, position)
 	tile_map.set_cell(0, position, 0, tile, 0)
+	tile_map.get_cell_tile_data(0, position).set_custom_data("TYPE", type)
 
 func place_tree_farm(tile_pos):
 	var tree_farm = Timer.new()
@@ -64,7 +69,7 @@ func place_tree_farm(tile_pos):
 	tree_farm.connect("timeout", _on_tree_farm_done)
 	tree_farms.add_child(tree_farm)
 	tree_farm.start()
-	place_tile(tile_pos, TREE_FARM)
+	place_tile(tile_pos, TREE_FARM, "TREE FARM")
 
 func _on_tree_farm_done():
 	assets["wood"] += 2
